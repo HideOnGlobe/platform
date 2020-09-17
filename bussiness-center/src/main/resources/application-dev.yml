@@ -1,0 +1,43 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+################### 数据库配置 start ##########################
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3306/platform?useUnicode=true&characterEncoding=UTF-8&useSSL=true　　
+      username: root　　
+      password: root
+      driver-class-name: com.mysql.jdbc.Driver
+      #连接池配置(通常来说，只需要修改initialSize、minIdle、maxActive
+      initial-size: 1
+      min-idle: 1
+      max-active: 20
+################### 数据库配置 end ##########################
+
+
+################### redis配置 start ##########################
+  redis:
+#    host: 127.0.0.1
+#    port: 6379
+#    password:
+    cluster:
+      nodes: 127.0.0.1:6379
+      max-redirects: 3
+    database: 0
+    timeout: 20000
+    lettuce:
+      pool:
+        max-active: 10
+        min-idle: 2
+        max-idle: 8
+        max-wait: 1000ms
+      shutdown-timeout: 1000ms
+################### redis配置 end ##########################
+
+
+
+logging:
+  config: classpath:log4j2.xml
