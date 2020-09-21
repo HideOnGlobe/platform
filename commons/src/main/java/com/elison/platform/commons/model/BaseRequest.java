@@ -1,7 +1,6 @@
 package com.elison.platform.commons.model;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.elison.platform.commons.page.PageQuery;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,10 +20,9 @@ import java.io.Serializable;
  **/
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class BaseRequest extends PageQuery implements Serializable {
+public abstract class BaseRequest implements Serializable {
     private static final long serialVersionUID = 8936598111078827315L;
 
     public <T extends BaseDTO> T convert(Class<T> tClass) {

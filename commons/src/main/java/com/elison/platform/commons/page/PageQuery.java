@@ -22,12 +22,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class PageQuery implements Serializable {
     private static final long serialVersionUID = 1207386372854887783L;
-    private Long pageSize = 10L;
-    private Long currentPage;
+    private Long size = 10L;
+    private Long page;
 
     public <T> Page<T> getPage() {
-        if (currentPage != null && currentPage != 0L) {
-            return new Page<T>(this.currentPage, this.pageSize);
+        if (page != null && page != 0L) {
+            return new Page<T>(this.page, this.size);
         } else {
             return null;
         }

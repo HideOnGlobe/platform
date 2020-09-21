@@ -22,8 +22,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Result<T extends BaseResponse> implements Serializable {
     private static final long serialVersionUID = -7010755543981539700L;
-    private static final String SUCCESS_MSG = "操作成功!";
-    private static final String FAIL_MSG = "操作失败!";
 
     private Integer code;
 
@@ -31,35 +29,35 @@ public class Result<T extends BaseResponse> implements Serializable {
 
     private String msg;
 
-    public static Result success(BaseResponse data) {
-        return new Result<>(CodeEnum.SUCCESS.getCode(), data, SUCCESS_MSG);
+    public static Result<?> success(BaseResponse data) {
+        return new Result<>(CodeEnum.SUCCESS.getCode(), data, CodeEnum.SUCCESS.getMsg());
     }
 
-    public static Result success(BaseResponse data, String msg) {
+    public static Result<?> success(BaseResponse data, String msg) {
         return new Result<>(CodeEnum.SUCCESS.getCode(), data, msg);
     }
 
-    public static Result success() {
-        return new Result<>(CodeEnum.SUCCESS.getCode(), null, SUCCESS_MSG);
+    public static Result<?> success() {
+        return new Result<>(CodeEnum.SUCCESS.getCode(), null, CodeEnum.SUCCESS.getMsg());
     }
 
-    public static Result success(String msg) {
+    public static Result<?> success(String msg) {
         return new Result<>(CodeEnum.SUCCESS.getCode(), null, msg);
     }
 
-    public static Result fail(CodeEnum codeEnum) {
-        return new Result<>(codeEnum.getCode(), null, FAIL_MSG);
+    public static Result<?> fail(CodeEnum codeEnum) {
+        return fail(codeEnum, codeEnum.getMsg());
     }
 
-    public static Result fail(CodeEnum codeEnum, String msg) {
-        return new Result<>(codeEnum.getCode(), null, msg);
+    public static Result<?> fail(CodeEnum codeEnum, String msg) {
+        return codeEnum != null ? new Result<>(codeEnum.getCode(), null, msg) : fail(msg);
     }
 
-    public static Result fail() {
-        return new Result<>(CodeEnum.BUSSINESS_ERROR.getCode(), null, FAIL_MSG);
+    public static Result<?> fail() {
+        return new Result<>(CodeEnum.BUSSINESS_ERROR.getCode(), null, CodeEnum.BUSSINESS_ERROR.getMsg());
     }
 
-    public static Result fail(String msg) {
-        return new Result<>(CodeEnum.BUSSINESS_ERROR.getCode(), null, msg);
+    public static Result<?> fail(String msg) {
+        return (msg != null && msg.length() > 0) ? new Result<>(CodeEnum.BUSSINESS_ERROR.getCode(), null, msg) : fail();
     }
 }
