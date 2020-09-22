@@ -1,9 +1,13 @@
 snowflake:
   #数据中心Id,不同模块请不要重复
   data-center-id: 1
+security:
+  signTImeout: 300
+  ignoreSingUri: "/swagger-ui.html,/swagger-resources,/v2/api-docs,/webjars/springfox-swagger-ui,/csrf"
 spring:
   profiles:
     active: #spring.profiles.active#
+
 
 ################### 数据库配置 start ##########################
   datasource:
