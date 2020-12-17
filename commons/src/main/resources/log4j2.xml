@@ -11,7 +11,7 @@
         <property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
         <!-- 定义日志存储的路径，不要配置相对路径 -->
         <property name="FILE_PATH" value="logs" />
-        <property name="FILE_NAME" value="platform" />
+        <property name="FILE_NAME" value="monitor" />
     </Properties>
 
     <appenders>
@@ -77,7 +77,7 @@
     <loggers>
 
         <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
-        <logger name="org.mybatis" level="info" additivity="false">
+        <logger name="org.mybatis" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
         </logger>
         <!--监控系统信息-->

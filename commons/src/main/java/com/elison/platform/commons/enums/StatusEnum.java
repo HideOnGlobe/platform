@@ -46,10 +46,12 @@ public enum StatusEnum implements IEnum {
         return this.description;
     }
 
-    public final StatusEnum getByCode(int code) {
-        for (StatusEnum statusEnum : StatusEnum.values()) {
-            if (ObjectUtil.equal(code, statusEnum.getCode())) {
-                return statusEnum;
+    public final StatusEnum getByCode(Integer code) {
+        if (code != null) {
+            for (StatusEnum statusEnum : StatusEnum.values()) {
+                if (ObjectUtil.equal(code, statusEnum.getCode())) {
+                    return statusEnum;
+                }
             }
         }
         return null;

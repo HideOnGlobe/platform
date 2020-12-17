@@ -1,0 +1,23 @@
+16:32:44.821 [main] INFO  com.elison.platform.WebApplication - Starting WebApplication on qiuqiudeMacBook-Pro.local with PID 51830 (/Users/elison/idea-project/personal/platform/web/target/classes started by elison in /Users/elison/idea-project/personal/platform)
+16:32:44.828 [main] INFO  com.elison.platform.WebApplication - The following profiles are active: commons,dev,commons-dev,user-center
+16:32:47.745 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-10000"]
+16:32:47.745 [main] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+16:32:47.746 [main] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.35]
+16:32:47.876 [main] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+16:32:48.009 [main] INFO  com.elison.platform.commons.filter.SecurityFilter - init SecurityFilter
+16:32:48.987 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1,platform} inited
+16:32:48.995 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-2,platform1} inited
+16:32:48.995 [main] INFO  com.baomidou.dynamic.datasource.DynamicRoutingDataSource - dynamic-datasource - load a datasource named [platform1] success
+16:32:48.996 [main] INFO  com.baomidou.dynamic.datasource.DynamicRoutingDataSource - dynamic-datasource - load a datasource named [platform] success
+16:32:48.996 [main] INFO  com.baomidou.dynamic.datasource.DynamicRoutingDataSource - dynamic-datasource initial loaded [2] datasource,primary datasource named [platform]
+16:32:51.967 [main] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-10000"]
+16:32:52.529 [main] INFO  com.elison.platform.WebApplication - Started WebApplication in 8.255 seconds (JVM running for 9.541)
+16:32:52.532 [main] INFO  com.elison.platform.user.check.PermissionCheck - 权限数据库修改检查开始
+16:32:52.965 [main] INFO  com.elison.platform.user.check.PermissionCheck - 权限数据库修改检查结束
+16:33:05.221 [SpringContextShutdownHook] INFO  com.elison.platform.commons.filter.SecurityFilter - destroy SecurityFilter
+16:33:05.235 [SpringContextShutdownHook] INFO  com.baomidou.dynamic.datasource.DynamicRoutingDataSource - dynamic-datasource start closing ....
+16:33:05.237 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-2} closing ...
+16:33:05.240 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-2} closed
+16:33:05.240 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+16:33:05.241 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+16:33:05.241 [SpringContextShutdownHook] INFO  com.baomidou.dynamic.datasource.DynamicRoutingDataSource - dynamic-datasource all closed success,bye

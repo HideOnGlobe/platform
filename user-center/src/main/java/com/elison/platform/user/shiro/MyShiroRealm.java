@@ -1,23 +1,24 @@
 package com.elison.platform.user.shiro;
 
+
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.elison.platform.commons.exception.ResultException;
+import com.elison.platform.commons.result.CodeEnum;
+import com.elison.platform.user.enums.UserStatusEnum;
 import com.elison.platform.user.model.dto.SysPermissionDTO;
 import com.elison.platform.user.model.dto.SysRoleDTO;
 import com.elison.platform.user.model.dto.SysUserDTO;
-import com.elison.platform.user.service.data.SysPermissionService;
-import com.elison.platform.user.service.data.SysRoleService;
-import com.elison.platform.user.service.data.SysUserService;
-import org.apache.commons.lang3.StringUtils;
+import com.elison.platform.user.service.*;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,11 +32,18 @@ import java.util.stream.Collectors;
  **/
 public class MyShiroRealm extends AuthorizingRealm {
 
-    @Resource
+    /**
+     * 必须使用懒加载
+     * 否则这些servlet将不通过BeanPostProcessors创建，将直接创建对象实例而不是代理类
+     */
+    @Autowired
+    @Lazy
     private SysUserService sysUserService;
-    @Resource
+    @Autowired
+    @Lazy
     private SysRoleService sysRoleService;
-    @Resource
+    @Autowired
+    @Lazy
     private SysPermissionService sysPermissionService;
 
     /**
@@ -45,20 +53,19 @@ public class MyShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
 
         // 从PrincipalCollection中获得用户信息
-        String userName = (String) principalCollection.getPrimaryPrincipal();
+        SysUserDTO user = (SysUserDTO) principalCollection.getPrimaryPrincipal();
 
         Set<String> roles = new HashSet<>();
         Set<String> permissions = new HashSet<>();
 
         // 根据用户名来查询数据库赋予用户角色,权限（查数据库）
-        if (StringUtils.isNotBlank(userName)) {
-            SysUserDTO sysUserDTO = sysUserService.getOneByUserName(userName);
-            List<SysRoleDTO> sysRoleDTOList = new ArrayList<>();
-            sysRoleDTOList.addAll(sysRoleService.listSysRolesByUserId(sysUserDTO.getId()));
-            roles.addAll(sysRoleDTOList.stream().map(SysRoleDTO::getCode).collect(Collectors.toList()));
-            List<SysPermissionDTO> sysPermissionDTOList = new ArrayList<>();
-            sysRoleDTOList.forEach(sysRoleDTO -> sysPermissionDTOList.addAll(sysPermissionService.listSysPermissionsByRoleId(sysRoleDTO.getId())));
-            permissions.addAll(sysPermissionDTOList.stream().map(SysPermissionDTO::getPermission).collect(Collectors.toList()));
+        if (StringUtils.isNotBlank(user.getUserName())) {
+            SysUserDTO sysUserDTO = sysUserService.getOneByUserName(user.getUserName());
+            Set<SysRoleDTO> sysRoleDTOSet = new HashSet<>(sysRoleService.listSysRolesByUserId(sysUserDTO.getId()));
+            roles.addAll(sysRoleDTOSet.stream().map(SysRoleDTO::getName).collect(Collectors.toList()));
+            Set<SysPermissionDTO> sysPermissionDTOSet = new HashSet<>();
+            sysRoleDTOSet.forEach(sysRoleDTO -> sysPermissionDTOSet.addAll(sysPermissionService.listSysPermissionsByRoleId(sysRoleDTO.getId())));
+            permissions.addAll(sysPermissionDTOSet.stream().map(SysPermissionDTO::getPermission).collect(Collectors.toList()));
         }
 
         // 更新以上代码
@@ -82,18 +89,32 @@ public class MyShiroRealm extends AuthorizingRealm {
         // 获得从表单传过来的用户名
         String username = upToken.getUsername();
 
-        SysUserDTO sysUserDTO = sysUserService.getOneByUserName(username);
-        // 如果用户不存在，抛此异常
-        if (sysUserDTO == null) {
-            return null;
+        SysUserDTO user = sysUserService.getOneByUserName(username);
+        // 如果用户不存在/账户被删除,抛此异常
+        if (user == null || UserStatusEnum.DELETED.equals(user.getUserStatus())) {
+            throw new UnknownAccountException();
+        }
+        // 如果用户未被激活,抛此异常
+        if (UserStatusEnum.NOT_ACTIVE.equals(user.getUserStatus())) {
+            throw new ResultException(CodeEnum.LOGIN_NOT_ACTIVE_USER);
+        }
+        // 如果用户被禁用,抛此异常
+        if (UserStatusEnum.FREEZE.equals(user.getUserStatus())) {
+            throw new LockedAccountException();
         }
 
+        Set<SysRoleDTO> sysRoleDTOSet = new HashSet<>(sysRoleService.listSysRolesByUserId(user.getId()));
+        user.setRoleSet(sysRoleDTOSet);
+        Set<SysPermissionDTO> sysPermissionDTOSet = new HashSet<>();
+        sysRoleDTOSet.forEach(sysRoleDTO -> sysPermissionDTOSet.addAll(sysPermissionService.listSysPermissionsByRoleId(sysRoleDTO.getId())));
+        user.setPermissionSet(sysPermissionDTOSet);
+
         // 认证的实体信息，可以是username，也可以是用户的实体类对象，这里用的用户名
-        Object principal = username;
+        Object principal = user;
         // 从数据库中查询的密码
-        Object credentials = sysUserDTO.getPassword();
+        Object credentials = user.getPassword();
         // 颜值加密的颜，可以用用户名
-        ByteSource credentialsSalt = ByteSource.Util.bytes(sysUserDTO.getSalt());
+        ByteSource credentialsSalt = ByteSource.Util.bytes(user.getSalt());
         // 当前realm对象的名称，调用分类的getName()
         String realmName = this.getName();
 
@@ -150,5 +171,6 @@ public class MyShiroRealm extends AuthorizingRealm {
         clearAllCachedAuthenticationInfo();
         clearAllCachedAuthorizationInfo();
     }
+
 
 }

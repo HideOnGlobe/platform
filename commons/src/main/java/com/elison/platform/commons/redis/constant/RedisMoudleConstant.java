@@ -9,5 +9,6 @@ package com.elison.platform.commons.redis.constant;
  * @UpdateDate: 2020/9/9 16:05
  **/
 public class RedisMoudleConstant {
+    public static final String COMMON = "common";
     public static final String USER = "user";
 }

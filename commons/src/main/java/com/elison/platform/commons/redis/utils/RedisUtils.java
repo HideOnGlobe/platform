@@ -1,11 +1,12 @@
 package com.elison.platform.commons.redis.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RedisUtils {
 
-    @Resource
+    @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
     public RedisUtils(RedisTemplate<String, Object> redisTemplate) {
@@ -638,5 +639,40 @@ public class RedisUtils {
         }
     }
 
+    public boolean zSet(String key, Object value, double score) {
+        try {
+            return redisTemplate.opsForZSet().add(key, value, score);
+        } catch (Exception e) {
+            log.error(errorMsg, e);
+            return false;
+        }
+    }
+
+    public long zRemove(String key, Object value) {
+        try {
+            return redisTemplate.opsForZSet().remove(key, value);
+        } catch (Exception e) {
+            log.error(errorMsg, e);
+            return 0;
+        }
+    }
+
+    public double zScore(String key, Object value) {
+        try {
+            return redisTemplate.opsForZSet().score(key, value);
+        } catch (Exception e) {
+            log.error(errorMsg, e);
+            return 0;
+        }
+    }
+
+    public Set<Object> zRange(String key, int size) {
+        try {
+            return redisTemplate.opsForZSet().range(key, 0, size);
+        } catch (Exception e) {
+            log.error(errorMsg, e);
+            return new HashSet<>();
+        }
+    }
 
 }

@@ -3,7 +3,6 @@ package com.elison.platform.commons.mybatis;
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
-import com.baomidou.mybatisplus.extension.injector.methods.LogicDeleteByIdWithFill;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,8 +21,8 @@ public class MySqlInjector extends DefaultSqlInjector {
     public List<AbstractMethod> getMethodList(Class<?> mapperClass) {
         List<AbstractMethod> methodList = super.getMethodList(mapperClass);
         methodList.add(new InsertBatchSomeColumn());
-        methodList.add(new LogicDeleteByIdWithFill());
-        methodList.add(new LogicBatchDeleteWithFill());
+//        methodList.add(new LogicDeleteByIdWithFill());
+//        methodList.add(new LogicBatchDeleteWithFill());
         return methodList;
     }
 }

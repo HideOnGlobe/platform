@@ -1,12 +1,11 @@
 package com.elison.platform.commons.model;
 
 import cn.hutool.core.bean.BeanUtil;
-import lombok.AllArgsConstructor;
+import cn.hutool.core.bean.copier.CopyOptions;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @ProjectName: platform
@@ -17,20 +16,25 @@ import java.io.Serializable;
  * @UpdateDate: 2020/9/3 15:09
  **/
 @Data
-@Accessors(chain = true)
-@AllArgsConstructor
-@NoArgsConstructor
 public abstract class BaseDTO implements Serializable {
     private static final long serialVersionUID = -1002131529043377871L;
 
     private Long id;
 
+    private Date createTime;
+
+    private Long createBy;
+
+    private Date updateTime;
+
+    private Long updateBy;
+
     public <T extends BaseDO> T convertToDO(Class<T> tClass) {
         return BeanUtil.toBean(this, tClass);
     }
 
-    public <T extends BaseResponse> T convertToResponse(Class<T> tClass) {
-        return BeanUtil.toBean(this, tClass);
+    public <T extends BaseResponse> T convertToResponse(Class<T> tClass, String... ignoreProperties) {
+        return BeanUtil.toBean(this, tClass, CopyOptions.create().setIgnoreProperties(ignoreProperties));
     }
 
 }

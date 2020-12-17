@@ -29,7 +29,7 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param entity 实体对象
      * @return 查询条件
      */
-    QueryWrapper<R> queryWrapper(T entity);
+    default QueryWrapper<R> queryWrapper(T entity) {throw new Error("未填充DataService.queryWrapper()业务代码!");}
 
     /**
      * 插入一条记录（选择字段，策略插入）
@@ -37,7 +37,7 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param entity 实体对象
      * @return 是否新增成功
      */
-    boolean insert(T entity);
+    default boolean insert(T entity) {throw new Error("未填充DataService.insert()业务代码!");}
 
     /**
      * 插入（批量）
@@ -45,7 +45,7 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param entityList 实体对象集合
      * @return 是否新增成功
      */
-    boolean insertBatch(Collection<T> entityList);
+    default boolean insertBatch(Collection<T> entityList) {throw new Error("未填充DataService.insertBatch()业务代码!");}
 
 
     /**
@@ -54,7 +54,7 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param entity 实体对象
      * @return 是否操作成功
      */
-    boolean updateById(T entity);
+    default boolean updateById(T entity) {throw new Error("未填充DataService.updateById()业务代码!");}
 
     /**
      * 根据ID 批量更新
@@ -95,7 +95,7 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param id 主键ID
      * @return 实体对象
      */
-    T getById(Long id);
+    default T getById(Long id) {throw new Error("未填充DataService.getById()业务代码!");}
 
     /**
      * 根据 实体对象，查询一条记录
@@ -125,7 +125,7 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param entity 实体对象
      * @return 实体对象列表
      */
-    List<T> list(T entity);
+    default List<T> list(T entity) {throw new Error("未填充DataService.page()业务代码!");}
 
     /**
      * 翻页查询
@@ -144,7 +144,7 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param entity 实体对象
      * @return 实体对象列表
      */
-    IPage<T> page(IPage<T> page, T entity);
+    default IPage<T> page(IPage<T> page, T entity) {throw new Error("未填充DataService.page()业务代码!");}
 
     /**
      * 转化Page查询类
@@ -191,7 +191,7 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param entity 实体对象
      * @return 数据量
      */
-    int count(T entity);
+    default int count(T entity) {throw new Error("未填充DataService.count()业务代码!");}
 
 
     /**
@@ -200,7 +200,17 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param id 主键ID
      * @return 是否操作成功
      */
-    boolean deleteById(Long id);
+    default boolean deleteById(Long id) {throw new Error("未填充DataService.deleteById()业务代码!");}
+
+    /**
+     * 删除泪飙ID的记录
+     *
+     * @param idList 主键ID列表
+     * @return 是否操作成功
+     */
+    default boolean deleteByIdList(Collection<Long> idList) {
+        throw new Error("未填充DataService.deleteById()业务代码!");
+    }
 
     /**
      * 删除所有记录
@@ -217,6 +227,6 @@ public interface BaseDataService<T extends BaseDTO, R extends BaseDO> {
      * @param entity 实体对象
      * @return 是否操作成功
      */
-    boolean delete(T entity);
+    default boolean delete(T entity) {throw new Error("未填充DataService.delete()业务代码!");};
 
 }

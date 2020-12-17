@@ -1,0 +1,58 @@
+################### 接口安全配置 start ##########################
+security:
+  signKey: 68cc4c4b833ff
+  signTimeout: 300
+  ignoreSingUri: "/swagger-ui.html,/swagger-resources,/v2/api-docs,/webjars/springfox-swagger-ui,/csrf"
+################### 接口安全配置 end ##########################
+
+################### 全局自定义配置 start ##########################
+globeConfig:
+  transactionalTimes: 10
+  maxReqTime: 200
+################### 全局自定义配置 end ##########################
+
+spring:
+  profiles:
+    active: commons-@profile.active@
+
+  aop:
+    auto: true
+    proxy-target-class: true
+
+################### 缓存配置 start ##########################
+  cache:
+    type: redis
+################### 缓存配置 end ##########################
+
+################### json配置 start ##########################
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    generator:
+      write-numbers-as-strings: true
+    default-property-inclusion: NON_EMPTY
+################### json配置 end ##########################
+
+
+################### mybatis插件 start ##########################
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*Mapper.xml
+  typeAliasesPackage: com.elison.platform.*.model.dao
+  typeEnumsPackage: com.elison.platform.*.enums
+  global-config:
+    db-config:
+      #主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: ID_WORKER
+      #字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
+      field-strategy: not_empty
+      #驼峰下划线转换
+      column-underline: true
+      db-type: mysql
+  # 原生配置
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+################### mybatis插件 end ##########################
+
+logging:
+  config: classpath:log4j2.xml

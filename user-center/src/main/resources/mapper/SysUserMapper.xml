@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.elison.platform.user.mapper.SysUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.elison.platform.user.model.dao.SysUser">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="user_name" property="userName"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="head_img_url" property="headImgUrl"/>
+        <result column="ip" property="ip"/>
+        <result column="user_status" property="userStatus"/>
+    </resultMap>
+
+    <select id="pageUserByManage" resultType="com.elison.platform.user.model.dao.SysUser">
+        select su.*
+        from sys_user su
+        <if test="roleIdList != null and roleIdList.size > 0">
+            left join sys_user_role sur on su.id = sur.user_id
+        </if>
+        where 1=1
+        <if test="sysUser.userName != null and sysUser.userName != ''">
+            and su.user_name like CONCAT(#{sysUser.userName}, '%')
+        </if>
+        <if test="sysUser.nickName != null and sysUser.nickName != ''">
+            and su.nick_name like CONCAT(#{sysUser.nickName}, '%')
+        </if>
+        <if test="sysUser.email != null and sysUser.email != ''">
+            and su.email like CONCAT(#{sysUser.email}, '%')
+        </if>
+        <if test="sysUser.phone != null and sysUser.phone != ''">
+            and su.phone like CONCAT(#{sysUser.phone}, '%')
+        </if>
+        <if test="sysUser.userStatus != null">
+            and su.user_status = #{sysUser.userStatus}
+        </if>
+        <if test="roleIdList != null and roleIdList.size > 0">
+            and sur.role_id in
+            <foreach collection="roleIdList" item="roleId" open="(" separator="," close=")">
+                #{roleId}
+            </foreach>
+        </if>
+    </select>
+
+
+</mapper>

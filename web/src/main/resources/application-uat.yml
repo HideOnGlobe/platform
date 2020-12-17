@@ -1,0 +1,40 @@
+server:
+  port: 10000
+
+cors:
+  origin: http://127.0.0.1:10000
+
+spring:
+  ################### 数据库配置 start ##########################
+  datasource:
+    dynamic:
+      druid:
+        #连接池配置(通常来说，只需要修改initialSize、minIdle、maxActive
+        initial-size: 1
+        min-idle: 1
+        max-active: 20
+      primary: platform
+      datasource:
+        platform:
+          url: jdbc:mysql://127.0.0.1:3306/platform?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&useSSL=false
+          username: root
+          password: 12345678
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        platform1:
+          url: jdbc:mysql://127.0.0.1:3306/platform1?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&useSSL=false
+          username: root
+          password: 12345678
+          driver-class-name: com.mysql.cj.jdbc.Driver
+    ################### 数据库配置 end ##########################
+
+
+  ################### redis配置 start ##########################
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: root
+    #    cluster:
+    #      nodes: 127.0.0.1:6379
+    #      max-redirects: 3
+    database: 0
+################### redis配置 end ##########################

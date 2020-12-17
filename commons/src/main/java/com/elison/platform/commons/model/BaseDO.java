@@ -3,12 +3,7 @@ package com.elison.platform.commons.model;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.Version;
-import com.elison.platform.commons.enums.StatusEnum;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -24,29 +19,12 @@ import java.util.Date;
  **/
 @Data
 @Accessors(chain = true)
-@AllArgsConstructor
-@NoArgsConstructor
 public abstract class BaseDO implements Serializable {
     /**
      * 主键ID,生成策略看配置文件,目前为手动实现的雪花算法(非MybatisPlus自带的雪花)
      * `id` bigint(11) NOT NULL AUTO_INCREMENT,
      */
     private Long id;
-
-    /**
-     * 乐观锁
-     * `version` int(11) DEFAULT 0 COMMENT '乐观锁版本号',
-     */
-    @Version
-    @TableField(fill = FieldFill.INSERT)
-    private Integer version;
-
-    /**
-     * 状态
-     * `status` smallint(6) DEFAULT 0 NOT NULL COMMENT '状态 0：正常 1：删除 2:禁用',
-     */
-    @TableLogic
-    private StatusEnum status;
 
     /**
      * 创建时间

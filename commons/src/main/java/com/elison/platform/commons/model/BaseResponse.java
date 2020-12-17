@@ -1,10 +1,5 @@
 package com.elison.platform.commons.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-
 import java.io.Serializable;
 
 /**
@@ -15,10 +10,5 @@ import java.io.Serializable;
  * @CreateDate: 2020/9/3 15:10
  * @UpdateDate: 2020/9/3 15:10
  **/
-@Data
-@Accessors(chain = true)
-@AllArgsConstructor
-@NoArgsConstructor
-public abstract class BaseResponse implements Serializable {
-    private static final long serialVersionUID = -3452273092881679202L;
+public interface BaseResponse extends Serializable {
 }

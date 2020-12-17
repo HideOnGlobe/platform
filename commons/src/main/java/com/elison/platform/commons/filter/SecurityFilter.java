@@ -33,10 +33,32 @@ import java.util.stream.Collectors;
 @Component
 public class SecurityFilter implements Filter {
 
-    @Value("security.signTimeout")
+    private boolean needCheck;
+    private String signKey;
     private int signTimeout;
-    @Value("security.ignoreSingUri")
-    private String ignoreSingUri;
+    private Set<String> ignoreSingUri;
+
+    @Value("${security.needCheck}")
+    private void setNeedCheck(String needCheck) {
+        this.needCheck = Boolean.parseBoolean(needCheck);
+    }
+
+
+    @Value("${security.signKey}")
+    private void setSignKey(String signKey) {
+        this.signKey = signKey;
+    }
+
+
+    @Value("${security.signTimeout}")
+    private void setSignTimeout(String signTimeout) {
+        this.signTimeout = Integer.parseInt(signTimeout);
+    }
+
+    @Value("${security.ignoreSingUri}")
+    private void setIgnoreSingUri(String ignoreSingUri) {
+        this.ignoreSingUri = Arrays.stream(ignoreSingUri.split(",")).collect(Collectors.toSet());
+    }
 
 
     @Override
@@ -50,25 +72,38 @@ public class SecurityFilter implements Filter {
         // 防止流读取一次后就没有了, 所以需要将流继续写出去
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        Set<String> uriSet = Arrays.stream(ignoreSingUri.split(",")).collect(Collectors.toSet());
         String requestUri = httpRequest.getRequestURI();
+
+        // 校验当前环境是否需要校验
+        if (!needCheck) {
+            filterChain.doFilter(httpRequest, response);
+            return;
+        }
+
+        // 校验当前URI是否需要进行校验
         boolean isMatch = false;
-        for (String uri : uriSet) {
+        for (String uri : ignoreSingUri) {
             isMatch = requestUri.contains(uri);
             if (isMatch) {
                 break;
             }
         }
-        log.debug("当前请求的URI是==>{},isMatch==>{}", httpRequest.getRequestURI(), isMatch);
+        log.debug("###请求URL: {}  ###是否需要进行解密: {}", httpRequest.getRequestURI(), isMatch);
         if (isMatch) {
             filterChain.doFilter(httpRequest, response);
             return;
         }
 
+        // 获取签名相关信息
         String sign = httpRequest.getHeader("Sign");
         Long timestamp = Convert.toLong(httpRequest.getHeader("Timestamp"));
-        String jsessionId =
-                Arrays.stream(httpRequest.getCookies()).filter(cookie -> "jseesionId".equals(cookie.getName())).findFirst().get().getValue();
+        String jsessionId = null;
+        try {
+            jsessionId =
+                    Arrays.stream(httpRequest.getCookies()).filter(cookie -> "JSESSIONID".equals(cookie.getName())).findFirst().get().getValue();
+        } catch (Exception e) {
+
+        }
 
         if (StrUtil.isEmpty(sign)) {
             returnFail("签名不允许为空", response);
@@ -87,7 +122,7 @@ public class SecurityFilter implements Filter {
             log.info("前端时间戳：{},服务端时间戳：{}", DateUtil.date(timestamp * 1000), DateUtil.date());
             return;
         }
-        if (verifySign(sign, timestamp, jsessionId)) {
+        if (jsessionId != null && verifySign(sign, timestamp, jsessionId)) {
             filterChain.doFilter(httpRequest, response);
         } else {
             returnFail("签名验证不通过", response);
@@ -104,8 +139,8 @@ public class SecurityFilter implements Filter {
         out.close();
     }
 
-    private static boolean verifySign(String sign, Long timestamp, String token) {
-        String paramsJsonStr = "Timestamp" + timestamp + "Token" + token;
+    private boolean verifySign(String sign, Long timestamp, String token) {
+        String paramsJsonStr = timestamp + (ObjectUtil.isNotEmpty(token) ? token : "") + signKey;
         return ObjectUtil.isNotEmpty(paramsJsonStr) && sign.equals(DigestUtils.md5DigestAsHex(paramsJsonStr.getBytes()).toUpperCase());
     }
 

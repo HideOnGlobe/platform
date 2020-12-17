@@ -1,5 +1,6 @@
 package com.elison.platform.commons.aspect;
 
+import com.elison.platform.commons.config.GlobeConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -25,7 +26,7 @@ import java.util.Arrays;
 public class GlobeAspect {
 
     @Around("execution(public * com.elison.platform.*.controller..*.*(..))")
-    public Object controllerLog(ProceedingJoinPoint pdj) throws Throwable{
+    public Object controllerLog(ProceedingJoinPoint pdj) throws Throwable {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         //开始时间
         long startTime = System.currentTimeMillis();
@@ -38,14 +39,17 @@ public class GlobeAspect {
         //结束时间
         long endTime = System.currentTimeMillis();
 
-        // 记录下请求内容
+        long runTime = endTime - startTime;
+        if (runTime >= GlobeConfig.getMaxReqTime()) {
+            log.warn("###请求URL: {}  ###IP: {}   ###Params: {}   ###CLASS_METHOD: {}.{}   ###耗时: {}毫秒",
+                    request.getRequestURL().toString(), request.getRemoteAddr(), Arrays.toString(args),
+                    pdj.getSignature().getDeclaringTypeName(), pdj.getSignature().getName(), runTime);
+        } else {
+            log.info("###请求URL: {}  ###IP: {}   ###Params: {}   ###CLASS_METHOD: {}.{}   ###耗时: {}毫秒",
+                    request.getRequestURL().toString(), request.getRemoteAddr(), Arrays.toString(args),
+                    pdj.getSignature().getDeclaringTypeName(), pdj.getSignature().getName(), runTime);
+        }
 
-        String sb = "###请求URL: " + request.getRequestURL().toString() +
-                "   ###IP: " + request.getRemoteAddr() +
-                "   ###Params: " + Arrays.toString(args) +
-                "   ###CLASS_METHOD: " + pdj.getSignature().getDeclaringTypeName() + "." + pdj.getSignature().getName() +
-                "   ###耗时: " + (endTime - startTime) + "毫秒";
-        log.info(sb);
         return ret;
     }
 }

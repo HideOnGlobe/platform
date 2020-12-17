@@ -1,7 +1,7 @@
 package com.elison.platform.user.redis;
 
+
 import com.elison.platform.commons.redis.constant.RedisMoudleConstant;
-import com.elison.platform.commons.redis.prefix.RedisKeyPrefix;
 
 /**
  * @ProjectName: platform
@@ -13,10 +13,9 @@ import com.elison.platform.commons.redis.prefix.RedisKeyPrefix;
  **/
 public class UserRedisKeyPrefix {
 
-    private static final String moudleName = RedisMoudleConstant.USER;
+    private static final String MOUDLE_NAME = RedisMoudleConstant.USER;
 
-    public static final String USER_DATA_SYS_USER_KEY = moudleName + ":" + "data" + ":" + "sys_user";
+    public static final String USER_DATA_SYS_USER_KEY = MOUDLE_NAME + ":" + "data" + ":" + "sys_user";
 
-    public static final String USER_BIZ_SYS_USER_KEY = new RedisKeyPrefix(moudleName, "sys_user").getBizKey();
 
 }
