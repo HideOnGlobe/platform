@@ -1,5 +1,6 @@
 package com.elison.platform.user.shiro;
 
+import cn.hutool.core.util.ObjectUtil;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -37,6 +38,8 @@ public class ShiroConfig {
     private Integer REDIS_PORT;
     @Value("${spring.redis.password}")
     private String REDIS_PASSWORD;
+    @Value("${spring.redis.database}")
+    private Integer REDIS_DATABASE;
 
     public static final String HASH_ALGORITHM_NAME = "SHA-256";
     public static final int HASH_ITERATIONS = 2;
@@ -183,7 +186,10 @@ public class ShiroConfig {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(REDIS_HOST + ":" + REDIS_PORT);
         redisManager.setTimeout(0);
-        redisManager.setPassword(REDIS_PASSWORD);
+        if (ObjectUtil.isNotEmpty(REDIS_PASSWORD)) {
+            redisManager.setPassword(REDIS_PASSWORD);
+        }
+        redisManager.setDatabase(REDIS_DATABASE);
         return redisManager;
     }
 
