@@ -32,7 +32,7 @@
         <mybatis.plus.boot.starter.version>3.4.0</mybatis.plus.boot.starter.version>
         <dynamic-datasource-spring-boot-starter.version>3.2.1</dynamic-datasource-spring-boot-starter.version>
         <knife4j.version>2.0.7</knife4j.version>
-        <mysql.connector.version>8.0.15</mysql.connector.version>
+        <mysql.connector.version>8.0.28</mysql.connector.version>
         <druid.spring.boot.starter.version>1.1.24</druid.spring.boot.starter.version>
         <lombok.version>1.18.8</lombok.version>
         <springfox.swagger.version>3.0.0</springfox.swagger.version>
