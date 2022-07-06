@@ -36,7 +36,7 @@
         <druid.spring.boot.starter.version>1.1.24</druid.spring.boot.starter.version>
         <lombok.version>1.18.8</lombok.version>
         <springfox.swagger.version>3.0.0</springfox.swagger.version>
-        <shiro.version>1.4.0</shiro.version>
+        <shiro.version>1.9.1</shiro.version>
         <shiro.redis.version>3.2.3</shiro.redis.version>
         <javaer.aliyun.version>1.1.0</javaer.aliyun.version>
         <binarywang.weixin.version>4.0.0</binarywang.weixin.version>
